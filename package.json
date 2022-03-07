@@ -1,0 +1,28 @@
+{
+  "name": "query-blockchain-testnet",
+  "version": "0.0.1",
+  "description": "A backend service to query the Cardano blockchain (testnet)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/House-of-Cardano/query-blockchain-testnet.git"
+  },
+  "author": "HouseOfCardano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/House-of-Cardano/query-blockchain-testnet/issues"
+  },
+  "homepage": "https://github.com/House-of-Cardano/query-blockchain-testnet#readme",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodeman": "^1.1.2",
+    "nodemon": "^2.0.15"
+  }
+}
