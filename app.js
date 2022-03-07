@@ -1,9 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
-const feedQuery = require('./routes/query')
+const getInformation = require('./routes/query');
 
 const app = express();
 
+app.use(bodyParser.json())
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
@@ -11,6 +13,9 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use(feedQuery);
+app.use('/query', getInformation);
 
-app.listen(8000);
+const PORT=8000
+app.listen(PORT, () => {
+    console.log(`Server now listening on port ${PORT}`)
+});
