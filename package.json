@@ -4,19 +4,19 @@
   "description": "A backend service to query the Cardano blockchain (testnet)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/House-of-Cardano/query-blockchain-testnet.git"
+    "url": "git+https://github.com/House-of-Cardano/houseofcardano-explorer-testnet.git"
   },
   "author": "HouseOfCardano",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/House-of-Cardano/query-blockchain-testnet/issues"
+    "url": "https://github.com/House-of-Cardano/houseofcardano-explorer-testnet/issues"
   },
-  "homepage": "https://github.com/House-of-Cardano/query-blockchain-testnet#readme",
+  "homepage": "https://github.com/House-of-Cardano/houseofcardano-explorer-testnet#readme",
   "dependencies": {
     "body-parser": "^1.19.2",
     "express": "^4.17.3",
@@ -25,7 +25,15 @@
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/supertest": "^2.0.11",
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "jest": "^27.5.1",
+    "mocha": "^9.2.1",
     "nodeman": "^1.1.2",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.2",
+    "ts-jest": "^27.1.3"
   }
 }
