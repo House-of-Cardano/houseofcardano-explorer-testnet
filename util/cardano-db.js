@@ -10,6 +10,7 @@ const pool = new Pool({
 
 module.exports = {
     query: (text, params) => pool.query(text, params),
+    all: (text) => pool.query(text)
   }
   
 // for cardano user to work, after creating teh user had to run these commands in the database at the 'testnet=#' prompt
