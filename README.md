@@ -44,3 +44,13 @@ Setup a basic configuration file by running `jest --init` (perhaps need to run `
 Add `"test": "jest --watchAll"` to the `scripts` block of `package.json`
 
 Run tests from the command line by running `npm run test`
+
+## Ending remarks
+
+If you have  enjoyed this project, please
+
+Consider donating -> addr1q8zcfzrhkcdazlmxtfw77l3vfq5xmqmjx3nxj4vtwlsp2dqr55mdgpys5aml6mww9zyv0v98j2jmzjvgf583gwxnswrqcs920u :pray:
+
+Consider staking on the HouseOfCardanoStakePool -> ticker [HOCSP] :fox_face:
+
+#Peace, #Love, #Cardano #forall :hearts:
