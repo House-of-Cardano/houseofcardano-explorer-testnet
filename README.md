@@ -1,3 +1,9 @@
+[![ADA](https://img.shields.io/badge/Cardano-ADA-informational)](https://github.com/House-of-Cardano/cardano-millions-testnet)
+[![Plutus](https://img.shields.io/badge/Cardano-Plutus-yellow)](https://github.com/House-of-Cardano/cardano-millions-testnet)
+[![License](https://img.shields.io/github/license/house-of-cardano/cardano-millions-testnet)](https://github.com/House-of-Cardano/cardano-millions-testnet)
+[![release](https://img.shields.io/badge/release-v0.0.1-9cf)](https://github.com/House-of-Cardano/cardano-millions-testnet)
+[![donate](https://img.shields.io/badge/Donate-addr1q8zcfzrhkcdazlmxtfw77l3vfq5xmqmjx3nxj4vtwlsp2dqr55mdgpys5aml6mww9zyv0v98j2jmzjvgf583gwxnswrqcs920u-success)](https://github.com/House-of-Cardano/cardano-millions-testnet)
+
 # houseofcardano-explorer-testnet
 Backend server to query the Cardano blockchain (testnet)
 
