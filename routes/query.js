@@ -23,7 +23,7 @@ const querydb = {
 
 router.get('/cardano-explorer', async (req, res) => {
     const { rows } = await db.query(querydb)
-    res.send(rows)
+    res.send(rows) 
   })
 
 module.exports = router;
