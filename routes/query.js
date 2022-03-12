@@ -10,8 +10,7 @@ const datumHash =  "\\xfac96da1bf190d85ae7e7a45b07b95826c3eb91b839564959d8411d4e
 
 const querydb = {
   text: 'select utxo_view.tx_id, utxo_view.address, utxo_view.value, tx.hash::text, tx_out.data_hash::text, tx.block_id from utxo_view inner join tx on tx.id = utxo_view.tx_id inner join tx_out on tx.id = tx_out.tx_id where utxo_view.address = $1 and tx_out.data_hash = $2',
-  values: [addr, datumHash],
-  rowMode: 'array'
+  values: [addr, datumHash]
 }
 
 router.get('/cardano-explorer', async (req, res) => {
