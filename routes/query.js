@@ -1,4 +1,5 @@
 const express = require('express');
+const querystring = require('querystring');
 
 const getInformation = require('../queries/query');
 const db = require('../util/cardano-db');
@@ -13,7 +14,7 @@ const querydb = {
   values: [addr, datumHash]
 }
 
-router.get('/cardano-explorer', async (req, res) => {
+router.get(`/cardano-explorer/?addr=${addr}&datumHash=${datumHash}`, async (req, res) => {
     const { rows } = await db.query(querydb)
     res.send(rows) 
   })
