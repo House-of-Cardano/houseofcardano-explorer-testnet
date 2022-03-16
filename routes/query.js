@@ -42,9 +42,10 @@ router.get("/cardano-explorer", async (req, res) => {
     console.log("JSON file has been saved.");
   });
 
-  fs.readFile(filePath,
-  // callback function that is called when reading file is done
-  function(err, data) {       
+  fs.readFile(
+    filePath,
+    // callback function that is called when reading file is done
+    function (err, data) {
       // json data
       var jsonData = data;
 
@@ -56,10 +57,11 @@ router.get("/cardano-explorer", async (req, res) => {
       // for (let i = 0; i < jsonParsed.length; i++) {
       //   console.log(jsonParsed[i]);
       // };
-      console.log(jsonParsed[0][0]);
-      console.log(jsonParsed[0][1]);
-      console.log(jsonParsed[0][2]);
-});
+      // console.log(jsonParsed[0][0]);
+      // console.log(jsonParsed[0][1]);
+      // console.log(jsonParsed[0][2]);
+    }
+  );
   res.send(rows);
 });
 
@@ -72,13 +74,7 @@ router.get("/cardano-explorer-meta", async (req, res) => {
   res.send(rows);
 });
 
-router.get("/cardano-explorer-tx", async (req, res) => {
-  const addr = req.query.addr;
-  const datumHash = req.query.datumHash;
-  const { rows } = await db.query({
-    text: "select * from tx limit 5",
-  });
-  res.send(rows);
-});
+router.get('/cardano-explorer-build-submit-tx', getInformation.buildTransaction);
 
+ 
 module.exports = router;
