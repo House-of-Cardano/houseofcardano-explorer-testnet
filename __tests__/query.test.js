@@ -2,8 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const request = require('supertest');
 
-const getInformation = require('./routes/query');
-const transaction = require('../transactions/transactions');
+// const getInformation = require('./routes/query');
+
 const app = require('../server');
 
 describe('cardnao-explorer-build-submit-tx', () => {
@@ -19,13 +19,4 @@ describe('cardnao-explorer-meta', () => {
         expect(res.statusCode).toEqual(200);
     });
 });
-
-describe('something to do with the Transactions class', () => {
-    it('contains or returns something', () => {
-        expect('something');
-    });
-});
-
-
-
 
