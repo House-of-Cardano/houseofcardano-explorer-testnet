@@ -11,7 +11,7 @@ exports.getQuery = (req, res, next) => {
   });
 };
 
-exports.transferToCagnotte = (req, res, next) => {
+exports.simpleTransfer = (req, res, next) => {
   res.json({
     query: [{ title: "First", content: "API Call" }],
   });

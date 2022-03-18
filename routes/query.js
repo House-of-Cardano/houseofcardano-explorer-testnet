@@ -74,7 +74,7 @@ router.get("/cardano-explorer-meta", async (req, res) => {
   res.send(rows);
 });
 
-router.get('/cardano-explorer-build-submit-tx', getInformation.transferToCagnotte);
+router.get('/cardano-explorer-build-submit-tx', getInformation.simpleTransfer);
 
  
 module.exports = router;
