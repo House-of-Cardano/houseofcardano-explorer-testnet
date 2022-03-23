@@ -18,7 +18,7 @@ const router = express.Router();
 //   values: [addr, datumHash],
 // };
 
-router.get("/cardano-explorer", async (req, res) => {
+router.get("/cardano-explorer-queryScriptAddr", async (req, res) => {
   const addr = req.query.addr;
   const datumHash = req.query.datumHash;
   const { rows } = await db.query({
@@ -39,42 +39,60 @@ router.get("/cardano-explorer", async (req, res) => {
       console.log("An error occured while writing JSON Object to File.");
       return console.log(err);
     }
-    console.log("JSON file has been saved.");
+    console.log("A json file has been saved");
   });
 
   fs.readFile(
     filePath,
-    // callback function that is called when reading file is done
     function (err, data) {
-      // json data
       var jsonData = data;
-
-      // parse json
       var jsonParsed = JSON.parse(jsonData);
-
-      // access elements
-      // console.log("Reading the individual UTxOs from the script address...")
-      // for (let i = 0; i < jsonParsed.length; i++) {
-      //   console.log(jsonParsed[i]);
-      // };
-      // console.log(jsonParsed[0][0]);
-      // console.log(jsonParsed[0][1]);
-      // console.log(jsonParsed[0][2]);
     }
   );
   res.send(rows);
 });
 
 router.get("/cardano-explorer-meta", async (req, res) => {
-  const addr = req.query.addr;
-  const datumHash = req.query.datumHash;
   const { rows } = await db.query({
     text: "select * from meta",
   });
   res.send(rows);
 });
 
-router.get('/cardano-explorer-build-submit-tx', getInformation.simpleTransfer);
+router.get(
+  "/cardano-explorer-build-submit-tx",
+  getInformation.buildTransaction
+);
 
- 
+router.get("/cardano-explorer-queryBank", async (req, res) => {
+  const addr = req.query.addr;
+  const { rows } = await db.query({
+    text: "select utxo_view.tx_id, utxo_view.address, utxo_view.value, tx.hash::text, tx_out.index, tx.block_id from utxo_view inner join tx on tx.id = utxo_view.tx_id inner join tx_out on tx.id = tx_out.tx_id where utxo_view.address = $1 and tx_out.index = 0",
+    values: [addr],
+  });
+  const bankUTxO = [];
+  for (let i = 0; i < rows.length; i++) {
+    bankUTxO.push([
+      rows[i].address,
+      rows[i].hash,
+      rows[i].index,
+      rows[i].value,
+    ]);
+  }
+
+  jsonBankUTxo = JSON.stringify(bankUTxO);
+  const fileName = "bankUTxO";
+  const filePath = path.join("data", fileName);
+
+  fs.writeFile(filePath, jsonBankUTxo, "utf8", function (err) {
+    if (err) {
+      console.log("An error occured while writing JSON Object to File.");
+      return console.log(err);
+    }
+    console.log("A json file has been saved");
+  });
+
+  res.send(rows);
+});
+
 module.exports = router;
