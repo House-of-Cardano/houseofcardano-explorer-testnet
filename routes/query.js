@@ -42,13 +42,10 @@ router.get("/cardano-explorer-queryScriptAddr", async (req, res) => {
     console.log("A json file has been saved");
   });
 
-  fs.readFile(
-    filePath,
-    function (err, data) {
-      var jsonData = data;
-      var jsonParsed = JSON.parse(jsonData);
-    }
-  );
+  fs.readFile(filePath, function (err, data) {
+    var jsonData = data;
+    var jsonParsed = JSON.parse(jsonData);
+  });
   res.send(rows);
 });
 
@@ -94,5 +91,10 @@ router.get("/cardano-explorer-queryBank", async (req, res) => {
 
   res.send(rows);
 });
+
+router.get(
+  "/cardano-explorer-luckynumbers",
+  getInformation.luckyNumbers
+);
 
 module.exports = router;
