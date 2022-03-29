@@ -1,5 +1,5 @@
 // Contains the business logic for the API calls
-
+const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -17,7 +17,17 @@ exports.buildTransaction = (req, res, next) => {
   });
 };
 
-exports.luckyNumbers = (req, res, next) => {
+exports.makePolicyFiles = (req, res, next) => {
+  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
+  execSync("node ../cardanonode-js/cardano-cli/policy/makePolicyFiles.js");
+  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
+  console.log("Policy files created");
+  res.json({
+    query: [{ title: "Policy Files", content: "200 OK" }],
+  });
+};
+
+exports.chooseLuckyNumbers = (req, res, next) => {
   const num1 = req.query.num1;
   const num2 = req.query.num2;
   const num3 = req.query.num3;
@@ -38,5 +48,26 @@ exports.luckyNumbers = (req, res, next) => {
   });
   res.json({
     query: [{ title: "Lucky Numbers", content: "200 OK" }],
+  });
+};
+
+exports.hashLuckyNumbers = (req, res, next) => {
+  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
+  execSync("node ../cardanonode-js/cardano-cli/CMT_datum/luckyNumbers.js");
+  execSync("node ../cardanonode-js/cardano-cli/CMT_datum/hashCMTDatum.js");
+  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
+  console.log("Lucky numbers dataum hashed");
+  res.json({
+    query: [{ title: "Lucky Numbers Datum is hashed", content: "200 OK" }],
+  });
+};
+
+exports.mintCMT = (req, res, next) => {
+  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
+  execSync("node ../cardanonode-js/cardano-cli/mintCMT.js");
+  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
+  console.log("CMT minted");
+  res.json({
+    query: [{ title: "CMT minted", content: "200 OK" }],
   });
 };

@@ -62,6 +62,7 @@ router.get(
 );
 
 router.get("/cardano-explorer-queryBank", async (req, res) => {
+  // http://167.86.98.239:8000/query/cardano-explorer-queryBank?addr=addr_test1vzc7magws73cel8lshw4yncmejylq4lutw2xx9ef02l70xs5jjjv5
   const addr = req.query.addr;
   const { rows } = await db.query({
     text: "select utxo_view.tx_id, utxo_view.address, utxo_view.value, tx.hash::text, tx_out.index, tx.block_id from utxo_view inner join tx on tx.id = utxo_view.tx_id inner join tx_out on tx.id = tx_out.tx_id where utxo_view.address = $1 and tx_out.index = 0",
@@ -93,8 +94,27 @@ router.get("/cardano-explorer-queryBank", async (req, res) => {
 });
 
 router.get(
-  "/cardano-explorer-luckynumbers",
-  getInformation.luckyNumbers
+  // http://167.86.98.239:8000/query/cardano-explorer-makepolicyfiles
+  "/cardano-explorer-makepolicyfiles",
+  getInformation.makePolicyFiles
+);
+
+router.get(
+  // http://167.86.98.239:8000/query/cardano-explorer-chooseLuckyNumbers?num1=150&num2=250&num3=350&num4=450&num5=550
+  "/cardano-explorer-chooseLuckyNumbers",
+  getInformation.chooseLuckyNumbers
+);
+
+router.get(
+  // http://167.86.98.239:8000/query/cardano-explorer-hashLuckyNumbers
+  "/cardano-explorer-hashLuckyNumbers",
+  getInformation.hashLuckyNumbers
+);
+
+router.get(
+  // http://167.86.98.239:8000/query/cardano-explorer-mintCMT
+  "/cardano-explorer-mintCMT",
+  getInformation.mintCMT
 );
 
 module.exports = router;
