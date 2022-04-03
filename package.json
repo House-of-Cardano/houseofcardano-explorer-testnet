@@ -18,11 +18,15 @@
   },
   "homepage": "https://github.com/House-of-Cardano/houseofcardano-explorer-testnet#readme",
   "dependencies": {
+    "axios": "^0.26.1",
     "body-parser": "^1.19.2",
     "express": "^4.17.3",
+    "mongodb": "^4.4.1",
     "mysql2": "^2.3.3",
     "pg": "^8.7.3",
-    "pg-format": "^1.0.4"
+    "pg-format": "^1.0.4",
+    "socket.io": "^4.4.1",
+    "socket.io-client": "^4.4.1"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

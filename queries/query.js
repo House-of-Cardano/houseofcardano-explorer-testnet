@@ -1,5 +1,6 @@
 // Contains the business logic for the API calls
 const { execSync } = require("child_process");
+const axios = require('axios');
 const fs = require("fs");
 const path = require("path");
 
@@ -18,9 +19,13 @@ exports.buildTransaction = (req, res, next) => {
 };
 
 exports.makePolicyFiles = (req, res, next) => {
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
+  );
   execSync("node ../cardanonode-js/cardano-cli/policy/makePolicyFiles.js");
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
+  );
   console.log("Policy files created");
   res.json({
     query: [{ title: "Policy Files", content: "200 OK" }],
@@ -35,16 +40,22 @@ exports.chooseLuckyNumbers = (req, res, next) => {
   const num5 = req.query.num5;
 
   const luckyNumbers = [];
-  luckyNumbers.push(parseInt(num1), parseInt(num2), parseInt(num3), parseInt(num4), parseInt(num5));
+  luckyNumbers.push(
+    parseInt(num1),
+    parseInt(num2),
+    parseInt(num3),
+    parseInt(num4),
+    parseInt(num5)
+  );
 
   jsonDatum = JSON.stringify(luckyNumbers);
 
   fs.writeFile("./data/datum", jsonDatum, "utf8", function (err) {
-  if (err) {
+    if (err) {
       console.log("An error occured while writing JSON Object to File.");
       return console.log(err);
-  }
-  console.log("A json file has been saved");
+    }
+    console.log("A json file has been saved");
   });
   res.json({
     query: [{ title: "Lucky Numbers", content: "200 OK" }],
@@ -52,10 +63,14 @@ exports.chooseLuckyNumbers = (req, res, next) => {
 };
 
 exports.hashLuckyNumbers = (req, res, next) => {
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
+  );
   execSync("node ../cardanonode-js/cardano-cli/CMT_datum/luckyNumbers.js");
   execSync("node ../cardanonode-js/cardano-cli/CMT_datum/hashCMTDatum.js");
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
+  );
   console.log("Lucky numbers dataum hashed");
   res.json({
     query: [{ title: "Lucky Numbers Datum is hashed", content: "200 OK" }],
@@ -63,11 +78,25 @@ exports.hashLuckyNumbers = (req, res, next) => {
 };
 
 exports.mintCMT = (req, res, next) => {
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
+  );
   execSync("node ../cardanonode-js/cardano-cli/mintCMT.js");
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
+  );
   console.log("CMT minted");
   res.json({
     query: [{ title: "CMT minted", content: "200 OK" }],
   });
+};
+
+exports.testUrl = (req, res, next) => {
+  const walletID = req.query.walletID;
+  const buffer = [];
+  const body = execSync(`curl --request GET \ --url http://167.86.98.239:8090/v2/wallets/${walletID}`);
+  buffer.push(body);
+  const data = Buffer.concat(buffer).toString();
+  // console.log(JSON.parse(data));
+  res.json({name: JSON.parse(data).name, funds: JSON.parse(data).balance.total.quantity});
 };
