@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const client = require("../util/cardano-db");
+const GameWallet = require('../wallets/createGameWallet');
 
 const WALLET_PORT = 8090;
 
@@ -30,7 +31,6 @@ exports.createWallet = (req, res, next) => {
 };
 
 exports.isWalletReady = (req, res, next) => {
-  // http://167.86.98.239:8000/query/wallet-ready?walletID=ad55217704b6e5071047f3bf95ee8f49fb0efa54
   async function subscribe() {
     const walletID = req.query.walletID;
     const buffer = [];

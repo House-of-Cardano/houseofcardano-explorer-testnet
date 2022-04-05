@@ -1,10 +1,9 @@
 const app = require("./server");
-const mongoConnect = require("./util/mongodb");
+const mongoConnect = require("./util/mongodb").mongoConnect;
 
 const PORT = 8000;
 
-mongoConnect((client) => {
-  console.log(client);
+mongoConnect(() => {
   const server = app.listen(PORT, () => {
     console.log(`Server now listening on port ${PORT}`);
   });
