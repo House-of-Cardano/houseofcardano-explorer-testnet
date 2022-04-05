@@ -1,8 +1,9 @@
 const getDb = require("../util/mongodb").getDb;
 
-class GameWallet {
-  constructor(name, password, recoveryPhrase, addr) {
-    this.name = name;
+class WalletCredentials {
+  constructor(walletID, walletName, password, recoveryPhrase, addr) {
+    this.walletID = walletID;
+    this.walletName = walletName;
     this.password = password;
     this.recoveryPhrase = recoveryPhrase;
     this.addr = addr;
@@ -10,7 +11,7 @@ class GameWallet {
 
   save() {
     const db = getDb();
-    db.collection("gameAddress")
+    return db.collection("wallets")
       .insertOne(this)
       .then((result) => {
           console.log(result);
@@ -21,4 +22,4 @@ class GameWallet {
   }
 }
 
-module.exports = GameWallet;
+module.exports = WalletCredentials;

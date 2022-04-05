@@ -17,6 +17,11 @@ router.get(
 router.get(
   "/create-wallet",
   createWallets.createWallet
+  );
+  
+  router.post(
+    "/save-wallet-credentials",
+    createWallets.saveWalletCredentials
 );
 
 router.get(
