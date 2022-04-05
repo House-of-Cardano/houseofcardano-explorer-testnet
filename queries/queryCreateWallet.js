@@ -6,18 +6,6 @@ const path = require("path");
 
 const client = require("../util/cardano-db");
 
-exports.getQuery = (req, res, next) => {
-  res.json({
-    query: [{ title: "First", content: "API Call" }],
-  });
-};
-
-exports.buildTransaction = (req, res, next) => {
-  res.json({
-    query: [{ title: "First", content: "API Call" }],
-  });
-};
-
 const WALLET_PORT = 8090;
 
 exports.testUrl = (req, res, next) => {

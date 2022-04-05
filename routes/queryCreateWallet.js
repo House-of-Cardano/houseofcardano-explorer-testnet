@@ -6,7 +6,7 @@ const path = require("path");
 const express = require("express");
 const querystring = require("querystring");
 
-const getInformation = require("../queries/query");
+const createWallets = require("../queries/queryCreateWallet");
 const db = require("../util/cardano-db");
 
 // socket.io part -> acting as if it was a client
