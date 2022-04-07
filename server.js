@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const getInformation = require('./routes/query');
+const queryDB = require('./routes/queryDbSync');
+const createWallet = require('./routes/createWallet');
+const mintNativeAssets = require('./routes/mintNativeAssets');
 
 const app = express();
 
@@ -16,6 +18,8 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/query', getInformation);
+app.use('/dbsync', queryDB);
+app.use('/wallet', createWallet);
+app.use('/asset', mintNativeAssets);
 
 module.exports = app;

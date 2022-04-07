@@ -13,7 +13,9 @@ module.exports = {
     all: (text) => pool.query(text)
   }
   
-// for cardano user to work, after creating teh user had to run these commands in the database at the 'testnet=#' prompt
+// VERY IMPORTANT
+// If you need to restart the database for any reason, these steps must be done first!!!
+// for cardano user to work, after creating the user had to run these commands in the database at the 'testnet=#' prompt
 
 // grant all privileges on all tables in schema public to cardano ;
 // grant all privileges on all sequences in schema public to cardano ;

@@ -1,5 +1,6 @@
 // Contains the business logic for the API calls
 const { execSync } = require("child_process");
+const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
@@ -17,57 +18,50 @@ exports.buildTransaction = (req, res, next) => {
   });
 };
 
-exports.makePolicyFiles = (req, res, next) => {
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
-  execSync("node ../cardanonode-js/cardano-cli/policy/makePolicyFiles.js");
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
-  console.log("Policy files created");
+const WALLET_PORT = 8090;
+
+exports.testUrl = (req, res, next) => {
+  const walletID = req.query.walletID;
+  const buffer = [];
+  const body = execSync(
+    `curl --request GET \ --url http://167.86.98.239:${WALLET_PORT}/v2/wallets/${walletID}`
+  );
+  buffer.push(body);
+  const data = Buffer.concat(buffer).toString();
+  // console.log(JSON.parse(data));
   res.json({
-    query: [{ title: "Policy Files", content: "200 OK" }],
+    name: JSON.parse(data).name,
+    funds: JSON.parse(data).balance.total.quantity,
   });
 };
 
-exports.chooseLuckyNumbers = (req, res, next) => {
-  const num1 = req.query.num1;
-  const num2 = req.query.num2;
-  const num3 = req.query.num3;
-  const num4 = req.query.num4;
-  const num5 = req.query.num5;
+exports.createWallet = (req, res, next) => {
+  // http://167.86.98.239:8000/query/create-wallet?name=test_3&recoverphrase=board+destroy+legal+assume+this+memory+forget+trigger+come+prison+alien+rack+jungle+deputy+result+battle+cabbage+labor+envelope+room+crawl+trumpet+ankle+spare
+  const walletName = req.query.name;
+  const recoveryPhrase = req.query.recoveryphrase; 
+};
 
-  const luckyNumbers = [];
-  luckyNumbers.push(parseInt(num1), parseInt(num2), parseInt(num3), parseInt(num4), parseInt(num5));
-
-  jsonDatum = JSON.stringify(luckyNumbers);
-
-  fs.writeFile("./data/datum", jsonDatum, "utf8", function (err) {
-  if (err) {
-      console.log("An error occured while writing JSON Object to File.");
-      return console.log(err);
+exports.isWalletReady = (req, res, next) => {
+  // http://167.86.98.239:8000/query/wallet-ready?walletID=ad55217704b6e5071047f3bf95ee8f49fb0efa54
+  async function subscribe() {
+    const walletID = req.query.walletID;
+    const buffer = [];
+    const body = execSync(
+      `curl --request GET \ --url http://167.86.98.239:${WALLET_PORT}/v2/wallets/${walletID} | jq ".state"`
+    );
+    buffer.push(body);
+    const data = Buffer.concat(buffer).toString();
+    if (JSON.parse(data).status == "ready") {
+      console.log(`Status: ${JSON.parse(data).status}`);
+      console.log(`Wallet ${walletID} is now ready for use`);
+      res.json(JSON.parse(data).status)
+    } else {
+      console.log(`Wallet ${walletID} synchronising to the blockchain. This operation may take some time, please wait...`);
+      console.log(`Status: ${JSON.parse(data).status}`);
+      console.log(`${JSON.parse(data).progress.quantity}%`);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      await subscribe();
+    }
   }
-  console.log("A json file has been saved");
-  });
-  res.json({
-    query: [{ title: "Lucky Numbers", content: "200 OK" }],
-  });
-};
-
-exports.hashLuckyNumbers = (req, res, next) => {
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
-  execSync("node ../cardanonode-js/cardano-cli/CMT_datum/luckyNumbers.js");
-  execSync("node ../cardanonode-js/cardano-cli/CMT_datum/hashCMTDatum.js");
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
-  console.log("Lucky numbers dataum hashed");
-  res.json({
-    query: [{ title: "Lucky Numbers Datum is hashed", content: "200 OK" }],
-  });
-};
-
-exports.mintCMT = (req, res, next) => {
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js");
-  execSync("node ../cardanonode-js/cardano-cli/mintCMT.js");
-  process.chdir("/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet");
-  console.log("CMT minted");
-  res.json({
-    query: [{ title: "CMT minted", content: "200 OK" }],
-  });
+  subscribe();
 };
