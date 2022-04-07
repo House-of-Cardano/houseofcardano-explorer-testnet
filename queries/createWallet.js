@@ -1,45 +1,63 @@
 // Contains the business logic for the API calls
 const { execSync } = require("child_process");
+const fs = require("fs");
+const path = require("path");
 
 const Wallet = require("../wallets/createWallet");
 
+const {
+  NETWORK_PARAMETERS,
+  MINTING_PARAMETERS,
+  SCRIPT_ADDRESS_PARAMETERS,
+  ADDRESSES,
+} = require("../../cardanonode-js/config");
+
 const WALLET_PORT = 8090;
 
-exports.saveWalletCredentials = (req, res, next) => {
-  const walletID = "31d546505906727bf56fd572e63c8fed56afb2b5";
-  const walletName = "test_5";
-  const password = "ZZZZZZZZZZZZZZZZZZZZZZZ";
-  const recoveryPhrase =
-    "dirt emotion pudding charge settle push behave gain impulse arm figure eyebrow tell knock rather enter poverty desk lounge depart run soup essence comfort";
-  const addr = [
-    "addr_test1qznpxcaj3ndmgunz7frwtgrtx5t6vjn4w8fkyyvcdnw59wy43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzys6d3juh",
-    "addr_test1qq580ulxjnemlwvhkmwczrtxlgh3jm2kdvspf9842l6vmvv43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzys9fk39p",
-    "addr_test1qzf586ynddphagcc9fn0mk8kq0czsnqevcqjxxenyvmxe2y43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysaeaw3n",
-    "addr_test1qz72um5v8m4426t76urrn4rcul9lyw9f4fk338088cse40y43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysqzcvxr",
-    "addr_test1qqtcjfuqkfa5s26m5jwnpd67nf8n2zzkd06r45c9xcu5pqy43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysp6mrty",
-    "addr_test1qqrdfngtjtthq83kh9vsuj4x9etzrnukzwklyw43xzglfyy43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzyszpf965",
-    "addr_test1qz5jsrjn2d6804h308ku2a7vy9s0pneqgcum2c3gdgqs4fu43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysvhlga7",
-    "addr_test1qz9y2qf0ecza7vqcg4gc4qyl5vkrpltgk4jacje8f7qy8q543mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzys6lujsu",
-    "addr_test1qrkwc6mcxvc6dddnwwndjfeh70lyersgcs4fhmum9q67xdu43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzystn293s",
-    "addr_test1qzc7603s08k64tf3207mzyanjpvaz8dkhp9kp7tz398sveu43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysg3zgs0",
-    "addr_test1qpd4y6pdnqnmcj63xuq9v8x0ja657sh0cy366kqy9gsfley43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzyskk2ccr",
-    "addr_test1qqhe2j0jecj94d9pz6epcq6efdlyt65etf27xdqnlxykq9543mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysf8rlcj",
-    "addr_test1qzjyfr0x2vu7l9hldekjxuv0qd4n0wrx7xglq7747332k7u43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzyspuaguq",
-    "addr_test1qrf4uxp2jz6ag79ks5tanrjrnzrnucy3tresqupp6u290sv43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysq4cvl6",
-    "addr_test1qrpm3jta9znls60yfgl7rmtyd2hu3p0cgn36wf9r0dzahtu43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysallh2l",
-    "addr_test1qz24x0jcj0hc0e2cl7mgn7yua052h89egf3e48e5r006xgv43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzyszfyr3g",
-    "addr_test1qrd4v873pr5gezvxy9re2knh0qpl70j8y68m2nlcgdxy2ky43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzyssgay88",
-    "addr_test1qrjndzk4452ps9uzjnu8tdp5lvpj2740242e4z9d3rltlry43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzyst68mk3",
-    "addr_test1qr85pe6mlaghag4d0048v6lmu99eztn34l80hl2mwrzyu8u43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzys4antvv",
-    "addr_test1qpm68tkemy97a28yrr23gckkqee0x7w0g7a6s9f8zpxqcmu43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzyszhzak6",
-    "addr_test1qp9qa503k8kk082al2fl6d265q7kffyad0mtsyetfdwwmnv43mj2fscdzxd5pc3cgs05mjpne74gt63rywd2dpg6tzysh5m6n7",
-  ];
+exports.createWallet = (req, res, next) => {
+  const walletName = req.query.walletName;
+  const password = req.query.password;
+  const buffer = [];
+
+  // Create recovery phrase
+  const recoveryPhrase = execSync(
+    `cardano-wallet recovery-phrase generate --size 24`
+  );
+  buffer.push(recoveryPhrase);
+  const data = Buffer.concat(buffer).toString();
+  console.log(data);
+
+  // Use recovery phrase to create the wallet and capture walletID as a variable
+  const buffer2 = [];
+  const walletCreation = execSync(
+    `printf "${data} \n  \n ${password} \n ${password} \n" | cardano-wallet wallet create from-recovery-phrase ${walletName}`
+  );
+  buffer2.push(walletCreation);
+  const data2 = Buffer.concat(buffer2).toString();
+  const walletID = JSON.parse(data2).id;
+  console.log(walletID);
+
+  res.json(JSON.parse(data2));
+
+  // Query address list and capture this as a list
+  const buffer3 = [];
+  const addresses = execSync(`cardano-wallet address list ${walletID}`);
+  buffer3.push(addresses);
+  const data3 = Buffer.concat(buffer3).toString();
+  const addrListJson = JSON.parse(data3);
+
+  const addrList = [];
+  for (let i = 0; i < addrListJson.length; i++) {
+    addrList.push(addrListJson[i].id);
+  }
+
+  // Save wallet to mongoDB
   const wallet = new Wallet(
     walletID,
     walletName,
     password,
-    recoveryPhrase,
-    addr
+    data.replace(/(\r\n|\n|\r)/gm, ""),
+    addrList
   );
   wallet
     .save()
@@ -50,32 +68,9 @@ exports.saveWalletCredentials = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-};
 
-exports.testUrl = (req, res, next) => {
-  const walletID = req.query.walletID;
-  const buffer = [];
-  const body = execSync(
-    `curl --request GET \ --url http://167.86.98.239:${WALLET_PORT}/v2/wallets/${walletID}`
-  );
-  buffer.push(body);
-  const data = Buffer.concat(buffer).toString();
-  // console.log(JSON.parse(data));
-  res.json({
-    name: JSON.parse(data).name,
-    funds: JSON.parse(data).balance.total.quantity,
-  });
-};
-
-exports.createWallet = (req, res, next) => {
-  // http://167.86.98.239:8000/query/create-wallet?name=test_3&recoverphrase=board+destroy+legal+assume+this+memory+forget+trigger+come+prison+alien+rack+jungle+deputy+result+battle+cabbage+labor+envelope+room+crawl+trumpet+ankle+spare
-  const walletName = req.query.name;
-  const recoveryPhrase = req.query.recoveryphrase;
-};
-
-exports.isWalletReady = (req, res, next) => {
+  // Determine when wallet has synchronised to the blockchain
   async function subscribe() {
-    const walletID = req.query.walletID;
     const buffer = [];
     const body = execSync(
       `curl --request GET \ --url http://167.86.98.239:${WALLET_PORT}/v2/wallets/${walletID} | jq ".state"`
@@ -97,4 +92,38 @@ exports.isWalletReady = (req, res, next) => {
     }
   }
   subscribe();
+};
+
+// Redundant???
+exports.isWalletFunded = (req, res, next) => {
+  const walletID = req.query.walletID;
+  const buffer = [];
+  const body = execSync(
+    `curl --request GET \ --url http://167.86.98.239:${WALLET_PORT}/v2/wallets/${walletID}`
+  );
+  buffer.push(body);
+  const data = Buffer.concat(buffer).toString();
+  console.log(
+    `Wallet ${walletID} currently contains ${
+      JSON.parse(data).balance.total.quantity / 1000000
+    } ADA`
+  );
+  res.json({
+    name: JSON.parse(data).name,
+    funds: JSON.parse(data).balance.total.quantity,
+    currency: "Lovelace",
+  });
+};
+
+// Redundant???
+exports.confirmBalance = (req, res, next) => {
+  const walletAddress = req.query.walletAddress;
+  const buffer = [];
+  const funds =
+    execSync(`cardano-cli query utxo --address ${walletAddress} --${NETWORK_PARAMETERS.networkMagic}
+  `);
+  buffer.push(funds);
+  const data = Buffer.concat(buffer).toString();
+  console.log(data);
+  res.json();
 };
