@@ -1,12 +1,13 @@
 const getDb = require("../util/mongodb").getDb;
 
 class WalletCredentials {
-  constructor(walletID, walletName, password, recoveryPhrase, addr) {
+  constructor(walletID, walletName, password, recoveryPhrase, addr, privateKey) {
     this.walletID = walletID;
     this.walletName = walletName;
     this.password = password;
     this.recoveryPhrase = recoveryPhrase;
     this.addr = addr;
+    this.privateKey = privateKey;
   }
 
   save() {

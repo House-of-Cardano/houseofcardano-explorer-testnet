@@ -133,7 +133,7 @@ router.get("/check-balance", async (req, res) => {
 });
 
 router.get("/total-available-funds", async (req, res) => {
-  // http://167.86.98.239:8000/dbsync/total-available-funds?addr=addr_test1vzc7magws73cel8lshw4yncmejylq4lutw2xx9ef02l70xs5jjjv5
+  // http://167.86.98.239:8000/dbsync/total-available-funds?addr=addr_test1qqss0hu0rf8swsfazk4kqtqgcgcv76r242zj84s90g56a5ztuyg7ct46rn0gsu32m5a9mwjqhx64myg3f56xjhvnq6mq0vvm9g
   const addr = req.query.addr;
 
   const { rows } = await db.query({

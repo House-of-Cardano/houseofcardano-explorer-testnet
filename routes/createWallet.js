@@ -9,7 +9,8 @@ const createWallets = require("../queries/createWallet");
 const router = express.Router();
 
 router.post(
-  // http://167.86.98.239:8000/wallet/create-wallet?walletName=test_6&password=ZZZZZZZZZZZZ
+  // http://167.86.98.239:8000/wallet/create-wallet?walletName=testWithPrivateKey&password=ZZZZZZZZZZZZ
+  // IN POSTMAN CHANGE TO POST!!!
   "/create-wallet",
   createWallets.createWallet
 );
