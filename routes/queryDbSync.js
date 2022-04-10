@@ -58,7 +58,7 @@ router.get("/cardano-explorer-meta", async (req, res) => {
 });
 
 router.get("/cardano-explorer-queryAddr", async (req, res) => {
-  // http://167.86.98.239:8000/dbsync/cardano-explorer-queryAddr?addr=addr_test1vzc7magws73cel8lshw4yncmejylq4lutw2xx9ef02l70xs5jjjv5&isBank=yes
+  // http://167.86.98.239:8000/dbsync/cardano-explorer-queryAddr?addr=addr_test1qr8px8xy5acc7mm40s5vckn5unssvx0wxkw8vnlwyl9gexgc8u0yys6k9ajrqje5nwj8pec34f8qkrk797zkmva83g5qafyhn6&isBank=no
   const addr = req.query.addr;
   const isBank = req.query.isBank;
 
@@ -133,7 +133,7 @@ router.get("/check-balance", async (req, res) => {
 });
 
 router.get("/total-available-funds", async (req, res) => {
-  // http://167.86.98.239:8000/dbsync/total-available-funds?addr=addr_test1qqss0hu0rf8swsfazk4kqtqgcgcv76r242zj84s90g56a5ztuyg7ct46rn0gsu32m5a9mwjqhx64myg3f56xjhvnq6mq0vvm9g
+  // http://167.86.98.239:8000/dbsync/total-available-funds?addr=addr_test1qrfjkhmgde2nk3wymyvwfnxpfcn69kfgy98pfsmpsj7hcc42tc995kgsakxjtfd58zsq64hg224uryqdjq35w4v98scsvw9u2h
   const addr = req.query.addr;
 
   const { rows } = await db.query({
@@ -154,7 +154,7 @@ router.get("/total-available-funds", async (req, res) => {
 });
 
 router.get("/notify-change-in-balance", async (req, res) => {
-  // http://167.86.98.239:8000/dbsync/notify-change-in-balance?addr=addr_test1qqss0hu0rf8swsfazk4kqtqgcgcv76r242zj84s90g56a5ztuyg7ct46rn0gsu32m5a9mwjqhx64myg3f56xjhvnq6mq0vvm9g
+  // http://167.86.98.239:8000/dbsync/notify-change-in-balance?addr=addr_test1qr8px8xy5acc7mm40s5vckn5unssvx0wxkw8vnlwyl9gexgc8u0yys6k9ajrqje5nwj8pec34f8qkrk797zkmva83g5qafyhn6
   const addr = req.query.addr;
   const { rows } = await db.query({
     text: "select utxo_view.tx_id, utxo_view.address, utxo_view.value, tx.hash::text, tx_out.index, tx.block_id from utxo_view inner join tx on tx.id = utxo_view.tx_id inner join tx_out on tx.id = tx_out.tx_id where utxo_view.address = $1 and tx_out.index = 0",

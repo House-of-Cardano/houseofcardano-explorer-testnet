@@ -22,6 +22,7 @@ exports.makePolicyFiles = (req, res, next) => {
   });
 };
 
+// MUST RUN CHECK BANK BEFORE RUNNING THIS
 exports.luckyNumbers = (req, res, next) => {
   const num1 = req.query.num1;
   const num2 = req.query.num2;
@@ -77,7 +78,7 @@ exports.luckyNumbers = (req, res, next) => {
   const dataHash = Buffer.concat(buffer).toString();
   console.log("Lucky numbers dataum hashed");
 
-  // Save LN, wallet to mongoDB
+  // Save LN, wallet credentials to mongoDB
   const number = new Numbers(luckyNumbers, jsonDatum, dataHash, walletID, addr);
   number
     .save()
@@ -88,6 +89,33 @@ exports.luckyNumbers = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+
+  // Mint the CMT
+  const datumHash = `${dataHash}`.replace(/(\r\n|\n|\r)/gm, "");
+
+  console.log("Minting CMT...");
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
+  );
+  execSync(`node ../cardanonode-js/cardano-cli/mintCMT.js`);
+  process.chdir(
+    "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
+  );
+  console.log("CMT minted");
+
+  // Purchase the CMT
+  // NEED TO GET THE PLAYER ADDRESS TOO !!!
+  // console.log("Setting up CMT purchase transaction...");
+  // process.chdir(
+  //   "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
+  // );
+  // execSync(
+  //   `node ../cardanonode-js/cardano-cli/purchaseCMT.js ${datumHash} ${playerAddr}`
+  // );
+  // process.chdir(
+  //   "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
+  // );
+  // console.log("CMT minted");
 
   res.json({
     datum: luckyNumbers,
