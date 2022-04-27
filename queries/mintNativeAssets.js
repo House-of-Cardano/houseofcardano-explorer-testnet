@@ -1,5 +1,5 @@
 // Contains the business logic for the API calls
-const { execSync } = require("child_process");
+const { execSync, exec } = require("child_process");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
@@ -9,6 +9,7 @@ const client = require("../util/cardano-db");
 const Numbers = require("../mongodbClasses/luckyNumbers");
 
 const query = require("../fetch/basicFetchQuery");
+const db = require("../util/cardano-db");
 
 const checkUTxO = require("../../cardanonode-js/processing/checkAddrUTxO");
 
@@ -158,25 +159,29 @@ exports.luckyNumbers = (req, res, next) => {
 
     console.log("Player's information saved to mongodb");
 
-      // Mint the CMT
+    // Mint the CMT
 
-      console.log("Minting CMT...");
-      process.chdir(
-        "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
-      );
-      execSync(
-        `node ../cardanonode-js/cardano-cli/mintCMT.js ${addr} ${gameWalletFullHash}`, {shell: "/bin/bash"}
-      );
-      process.chdir(
-        "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
-      );
-      console.log("CMT minted");
+    console.log("Minting CMT...");
+    process.chdir(
+      "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
+    );
+    execSync(
+      `node ../cardanonode-js/cardano-cli/mintCMT.js ${addr} ${gameWalletFullHash}`,
+      { shell: "/bin/bash" }
+    );
+    process.chdir(
+      "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
+    );
+    console.log("CMT minted");
+
+    console.log("Waiting for timer...");
 
     // Purchase the CMT
     console.log("Calculating game wallet available UTxO...");
 
-    const purchaseCMT = async () => {
+    const getUTxO = async () => {
       const transactionHashData2 = await query(queryAddrUrl);
+      console.log(transactionHashData2);
       const fullTransactionHash2 =
         transactionHashData2[0].hash.substring(2) +
         "#" +
@@ -195,7 +200,9 @@ exports.luckyNumbers = (req, res, next) => {
         "utf8"
       );
       console.log("A json file has been saved (fullTransactionHash2)");
+    };
 
+    const runTransferFunction = () => {
       const gameWalletFullHash2 = fs.readFileSync(
         "./data/fullTransactionHash2.json",
         "utf8"
@@ -231,17 +238,31 @@ exports.luckyNumbers = (req, res, next) => {
         "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
       );
       console.log("Current directory: " + process.cwd());
-      execSync(
-        `node cardano-cli/purchaseCMT.js ${luckyNumbersDatumHash.replace(/(\r\n|\n|\r)/gm,"")} ${playersHomeAddress.replaceAll(/"/g, "").replace(/(\r\n|\n|\r)/gm, "")} ${gameWalletFullHash2.replaceAll(/"/g, "").replace(/(\r\n|\n|\r)/gm, "")}`
+      exec(
+        `node cardano-cli/purchaseCMT.js ${luckyNumbersDatumHash.replace(
+          /(\r\n|\n|\r)/gm,
+          ""
+        )} ${playersHomeAddress
+          .replaceAll(/"/g, "")
+          .replace(/(\r\n|\n|\r)/gm, "")} ${gameWalletFullHash2
+          .replaceAll(/"/g, "")
+          .replace(/(\r\n|\n|\r)/gm, "")}`
       );
       process.chdir(
         "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
       );
       console.log("Current directory: " + process.cwd());
       console.log(
-        `CMT transferred to your wallet ${playersHomeAddress.replaceAll(/"/g,"")}`
-        );
+        `CMT transferred to your wallet ${playersHomeAddress.replaceAll(
+          /"/g,
+          ""
+        )}`
+      );
     };
+
+    setTimeout(getUTxO, 120000);
+    setTimeout(runTransferFunction, 130000);
+
     res.json({
       datum: luckyNumbers,
       jsonDatum: jsonDatum,
@@ -250,10 +271,6 @@ exports.luckyNumbers = (req, res, next) => {
       addr: addr,
       playersAddress: playersHomeAddress,
     });
-    console.log(
-      "Blockchain operations on cardano can take up to 20 seconds, thanks for your patience....."
-    );
-    setTimeout(purchaseCMT, 30000);
   };
   saveData();
 };

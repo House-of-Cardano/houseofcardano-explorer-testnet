@@ -23,6 +23,7 @@
     "express": "^4.17.3",
     "mongodb": "^4.4.1",
     "mysql2": "^2.3.3",
+    "node-fetch": "2.0",
     "pg": "^8.7.3",
     "pg-format": "^1.0.4",
     "socket.io": "^4.4.1",

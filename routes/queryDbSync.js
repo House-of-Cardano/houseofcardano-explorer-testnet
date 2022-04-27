@@ -97,7 +97,7 @@ router.get("/cardano-explorer-queryAddr", async (req, res) => {
 });
 
 router.get("/check-balance", async (req, res) => {
-  // http://167.86.98.239:8000/dbsync/check-balance?addr=addr_test1qqss0hu0rf8swsfazk4kqtqgcgcv76r242zj84s90g56a5ztuyg7ct46rn0gsu32m5a9mwjqhx64myg3f56xjhvnq6mq0vvm9g
+  // http://167.86.98.239:8000/dbsync/check-balance?addr=addr_test1qr8px8xy5acc7mm40s5vckn5unssvx0wxkw8vnlwyl9gexgc8u0yys6k9ajrqje5nwj8pec34f8qkrk797zkmva83g5qafyhn6
   const addr = req.query.addr;
 
   const { rows } = await db.query({
@@ -185,6 +185,26 @@ router.get("/notify-change-in-balance", async (req, res) => {
     }
   }
   subscribe();
+});
+
+router.get("/historical-transaction-list", async (req, res) => {
+  // http://167.86.98.239:8000/dbsync/historical-transaction-list?addr=addr_test1qr8px8xy5acc7mm40s5vckn5unssvx0wxkw8vnlwyl9gexgc8u0yys6k9ajrqje5nwj8pec34f8qkrk797zkmva83g5qafyhn6
+  const addr = req.query.addr;
+  const { rows } = await db.query({
+    text: "select tx.hash::text, tx_out.index, tx_out.value from tx inner join tx_out on tx_out.tx_id = tx.id where tx_out.address = $1",
+    values: [addr],
+  });
+  res.send(rows);
+});
+
+router.get("/get-user-wallet", async (req, res) => {
+  // http://167.86.98.239:8000/dbsync/get-user-wallet?transactionHash=\xe687809f1b5feb0c8152ec5e10428e0f37286e5c8ed0b0153546bfececa86f06
+  const transactionHash = req.query.transactionHash;
+  const { rows } = await db.query({
+    text: "select tx_out.address from tx_out inner join tx on tx_out.tx_id = tx.id where tx.hash = $1",
+    values: [transactionHash],
+  });
+  res.send(rows);
 });
 
 module.exports = router;
