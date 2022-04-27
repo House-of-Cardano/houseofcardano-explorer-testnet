@@ -46,6 +46,14 @@ exports.luckyNumbers = (req, res, next) => {
     parseInt(num5)
   );
 
+  function orderLuckyNumbers(integerArray) {
+    integerArray.sort((a, b) => a - b);
+    console.log(integerArray);
+    return integerArray;
+  }
+
+  orderLuckyNumbers(luckyNumbers);
+
   // Transform lucky numbers to json
   const map = new Map();
 
@@ -86,6 +94,7 @@ exports.luckyNumbers = (req, res, next) => {
     // Transaction hash comes from the fundning of the Game Wallet and allows the identification of the input wallet (players address)
     const queryAddrUrl = `http://167.86.98.239:8000/dbsync/cardano-explorer-queryAddr?addr=${addr}&isBank=no`;
     const transactionHashData = await query(queryAddrUrl);
+    console.log(transactionHashData);
     const transactionHash = transactionHashData[0].hash.substring(2);
     const fullTransactionHash =
       transactionHashData[0].hash.substring(2) +
