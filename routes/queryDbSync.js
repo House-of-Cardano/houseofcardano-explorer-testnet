@@ -287,21 +287,21 @@ router.get("/queryScriptAddrDatumHash", async (req, res) => {
 
   console.log("Proceeding with transfer...");
 
-  // const transferFile = async () => {
-  //   process.chdir(
-  //     "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
-  //   );
-  //   execSync(
-  //     `node cardano-cli/transferFromScriptAddr.js ${addr} ${gameWalletFullHash}`,
-  //     { shell: "/bin/bash" }
-  //   );
-  //   process.chdir(
-  //     "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
-  //   );
-  //   console.log("Transfer completed");
-  // };
+  const transferFile = async () => {
+    process.chdir(
+      "/home/node/HouseOfCardano/cardano-millions-testnet/cardanonode-js"
+    );
+    execSync(
+      `node cardano-cli/transferFromScriptAddr.js ${charity} ${cagnotte} ${bank}`,
+      { shell: "/bin/bash" }
+    );
+    process.chdir(
+      "/home/node/HouseOfCardano/cardano-millions-testnet/houseofcardano-explorer-testnet"
+    );
+    console.log("Transfer completed");
+  };
 
-  // setTimeout(transferFile, 5000);
+  setTimeout(transferFile, 10000);
 
   res.send({
     Transactions: rows,
